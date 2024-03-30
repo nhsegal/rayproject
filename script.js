@@ -1,35 +1,32 @@
 
-let car;
+let laser;
 let resetButton;
-let metronome;
-let meterstick;
-let ruler;
+
 
 function setup() {
-  createCanvas(800, 800);
+  createCanvas(800, 400);
   angleMode(DEGREES);
   rectMode(CENTER);
-  laser = new Laser(width / 2, height / 2, 1);
-  //ruler = new Ruler(width / 4, 250, 20, 400);
-  //car.on = true
+  let initialLaserPos = createVector(width / 2, height / 2);
+  let initialHeading = createVector(1, 0);
+  laser = new Laser(initialLaserPos, initialHeading);
 }
 
 function draw() {
   background(220);
   laser.display();
   laser.move();
-  //ruler.display(mouseX, mouseY);
 }
 
 class Laser {
-  constructor(x, y, v) {
-    this.x = x;
-    this.y = y;
-    this.v = v;
+  constructor(posVec, directionVec) {
+    this.x = posVec.x;
+    this.y = posVec.y;
+    this.direction = directionVec;
     this.on = false;
     this.dragging = false;
     this.turning = false;
-    this.direction = createVector(0, 1);
+ 
   }
   move() {
     if (this.on) {
@@ -102,94 +99,26 @@ class Laser {
   }
 }
 
-class Ruler {
-  constructor(x, y) {
+class Beam {
+  constructor(startPos, headingVec) {
     this.x = x;
     this.y = y;
     this.w = 20;
     this.h = 400;
-    this.dragging = false;
-    this.offsetX = 0;
-    this.offsetY = 0;
   }
 
   display() {
     push();
     fill(240, 240, 140);
-    noStroke();
-    translate(this.x, this.y);
-    rect(0, 0, this.w, this.h);
-    tickMarks(-this.w / 2, -this.h / 2, 4);
     pop();
   }
   
-  pickedUp() {
-     if (abs(this.x - mouseX) < this.w/2 && abs(this.y - mouseY) < this.h/2) {
-      console.log("hi");
-      this.dragging = true;
-      this.x = mouseX;
-      this.y = mouseY;
-    }
-    if (
-      abs(this.x - mouseX ) < this.w/2 &&
-      abs(this.y + this.h/2 - mouseY) < this.h/2
-    ) {
-      console.log("turning");
-     // this.turning = true;
-      this.dragging = false;
-      
-    }
-    /*
-    if (
-      abs(this.x - mouseX - this.direction.x * 20) < 7 &&
-      abs(this.y - this.direction.y * 20 - mouseY) < 7
-    ) {
-      console.log("switch");
-      this.turning = false;
-      this.dragging = false;
-      this.on = !this.on;
-    }
-    */
-  }
-
-  pressed(px, py) {
-    if (
-      px > this.x - this.w / 2 &&
-      px < this.x + this.w / 2 &&
-      py > this.y - this.h / 2 &&
-      py < this.y + this.h / 2
-    ) {
-      this.dragging = true;
-      this.offsetX = this.x - px;
-      this.offsetY = this.y - py;
-    }
-  }
-
-  notPressed(px, py) {
-    this.dragging = false;
-  }
 }
 
 function mousePressed() {
   laser.pickedUp();
- // ruler.pickedUp();
 }
 function mouseReleased() {
   laser.dragging = false;
   laser.turning = false;
-}
-
-function tickMarks(x, y, s) {
-  stroke(0);
-  for (let i = 0; i < 101; i++) {
-    line(x, y + s * i, x + 2 + 4 * ((i + 1) % 2), y + s * i);
-    if (i % 10 == 0) {
-      line(x, y + s * i, x + 10, y + s * i);
-      noStroke();
-      fill(0);
-      textSize(10);
-      text(100 - i, x + 10, y + s * i);
-      stroke(0);
-    }
-  }
 }
