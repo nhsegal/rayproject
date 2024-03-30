@@ -2,7 +2,6 @@
 let laser;
 let resetButton;
 
-
 function setup() {
   createCanvas(800, 400);
   angleMode(DEGREES);
@@ -26,24 +25,22 @@ class Laser {
     this.on = false;
     this.dragging = false;
     this.turning = false;
+    this.beam = new Beam(posVec, directionVec)
  
   }
   move() {
-    if (this.on) {
-      stroke(250,0,0)
-      strokeWeight(10)
-    
-      //this.y += this.direction.y;
-      //this.x += this.direction.x;
-    } else if (this.dragging) {
+   if (this.dragging) {
       this.x = mouseX;
       this.y = mouseY;
+      this.beam.x = mouseX;
+      this.beam.y = mouseY;
     } else if (this.turning) {
       this.direction.setHeading(radians(this.direction.heading() + 90));
       this.turning = false;
     }
-      line(this.x+30*this.direction.x, this.y+30*this.direction.y, this.x+400*this.direction.x, this.y+400*this.direction.y)
+    
   }
+
   display() {
     push();
     translate(this.x, this.y);
@@ -68,6 +65,7 @@ class Laser {
     line(-7, -17, 7, -17);
     line(0, -17, -4 + 8 * this.on, -21);
     pop();
+    this.beam.display()
   }
 
   pickedUp() {
@@ -101,15 +99,16 @@ class Laser {
 
 class Beam {
   constructor(startPos, headingVec) {
-    this.x = x;
-    this.y = y;
-    this.w = 20;
-    this.h = 400;
+    this.x = startPos.x;
+    this.y = startPos.y;
+    this.direction = headingVec;
   }
 
   display() {
+    stroke(250,0,0)
+    strokeWeight(10)
     push();
-    fill(240, 240, 140);
+    line(this.x+30*this.direction.x, this.y+30*this.direction.y, this.x+400*this.direction.x, this.y+400*this.direction.y)
     pop();
   }
   
