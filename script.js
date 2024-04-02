@@ -1,6 +1,7 @@
 
 let laser;
 let resetButton;
+let mirror;
 
 function setup() {
   createCanvas(800, 400);
@@ -9,12 +10,14 @@ function setup() {
   let initialLaserPos = createVector(width / 2, height / 2);
   let initialHeading = createVector(1, 0);
   laser = new Laser(initialLaserPos, initialHeading);
+  mirror = new Mirror(600, 150, 600, 250)
 }
 
 function draw() {
   background(220);
   laser.display();
   laser.move();
+  mirror.display();
 }
 
 class Laser {
@@ -25,15 +28,15 @@ class Laser {
     this.on = false;
     this.dragging = false;
     this.turning = false;
-    this.beam = new Beam(createVector(posVec.x+30, posVec.y+30), directionVec)
+    this.beam = new Beam(createVector(posVec.x, posVec.y), directionVec)
  
   }
   move() {
    if (this.dragging) {
       this.x = mouseX;
       this.y = mouseY;
-      this.beam.x = mouseX;
-      this.beam.y = mouseY;
+      this.beam.segments[0].x = mouseX;
+      this.beam.segments[0].y = mouseY;
     } else if (this.turning) {
       this.direction.setHeading(radians(this.direction.heading() + 90));
       this.turning = false;
@@ -111,11 +114,11 @@ class Beam {
     strokeWeight(10);
     for (let i = 0; i < this.segments.length-1; i++){
       push();
-      line(this.segments[i].x+30*this.direction.x, this.y+30*this.direction.y, this.x+400*this.direction.x, this.y+400*this.direction.y)
+      line(this.segments[i].x+30*this.direction.x, this.y+30*this.direction.y, this.x+width*this.direction.x, this.y+height*this.direction.y)
       pop();
     }
     push();
-    line(this.segments[this.segments.length-1].x+*this.direction.x, this.y+30*this.direction.y, this.x+400*this.direction.x, this.y+400*this.direction.y)
+    line(this.segments[this.segments.length-1].x+30*this.direction.x, this.segments[this.segments.length-1].y+30*this.direction.y, this.segments[this.segments.length-1].x+2*width*this.direction.x, this.segments[this.segments.length-1].y+2*height*this.direction.y)
     pop();
   }
 
@@ -135,7 +138,7 @@ class Mirror {
   display (){
     stroke(100);
     strokeWeight(10);
-    line(x1,y1,x2,y2)
+    line(this.x1,this.y1,this.x2,this.y2)
   }
 }
 
